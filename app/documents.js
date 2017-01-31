@@ -14,7 +14,7 @@ let inputs; // a global variable to hold any input data
 
 // executes the building of a model
 const run = async (current_model, number_to_generate, number_override, options) => {
-  // console.log('documents.run');
+  //console.log('documents.run');
   inputs = inputs || input.get_inputs(); // set the inputs if they aren't set yet
   // define a key based on the model path to hold the generated documents and document_index for the model
   documents[current_model.name] = [];
@@ -34,7 +34,10 @@ const run = async (current_model, number_to_generate, number_override, options) 
   if (options.hasOwnProperty('verbose')) {
     console.log(`Generating ${number_to_generate} documents for ${current_model.name} model`);
   }
-  for (let i = 0; i < number_to_generate; i++) { // loop over each model and execute in order of dependency
+  let offset =  parseInt(options["offset"])
+
+
+  for (let i = offset; i < (number_to_generate + offset); i++) { // loop over each model and execute in order of dependency
     builds.push(
       build_document(current_model, model_paths, document_paths, i)
     );
@@ -54,11 +57,13 @@ const run = async (current_model, number_to_generate, number_override, options) 
 
 // builds a document and saves it to the global documents variable, the outputs the result
 const build_document = async (current_model, model_paths, document_paths, document_index) => {
-  // console.log('inputs.build_document');
+     //console.log('documents.build_document');
   try {
     // generate the initial values
+
     let generated_document = build(current_model, model_paths, document_paths, document_index);
-    // console.log(JSON.stringify(generated_document));
+
+     //console.log(JSON.stringify(generated_document));
     documents[current_model.name].push(generated_document);
   } catch (e) {
     throw e;
@@ -67,7 +72,7 @@ const build_document = async (current_model, model_paths, document_paths, docume
 
 // builds a document
 const build = (current_model, model_paths, document_paths, document_index) => {
-  // console.log('inputs.build');
+     //console.log('documents.build');
   try {
     // generate the initial values
     let generated_document = initialize_document(current_model, model_paths, document_paths);
@@ -89,7 +94,7 @@ const build = (current_model, model_paths, document_paths, document_index) => {
 
 // initializes a documents default values
 const initialize_document = (current_model, model_paths, document_paths) => {
-  // console.log('inputs.initialize_document');
+     //console.log('documents.initialize_document');
   let generated_document = {};
   let key;
   try {
@@ -109,7 +114,7 @@ const initialize_document = (current_model, model_paths, document_paths) => {
 
 // generates the initial value for a variable based on the data type
 const initialize_value = (data_type) => {
-  // console.log('documents.initialize_value');
+     //console.log('documents.initialize_value');
   let value;
   if (data_type === 'string') {
     value = '';
@@ -129,7 +134,7 @@ const initialize_value = (data_type) => {
 
 // builds an object based on a model
 const build_object = (current_model, generated_document, model_paths, document_paths, document_index) => {
-  // console.log('documents.build_object');
+     //console.log('documents.build_object');
   let key;
   try {
     model_paths.forEach((path, index) => {
@@ -150,7 +155,7 @@ const build_object = (current_model, generated_document, model_paths, document_p
 
 // builds a single value based on a property definition
 const build_value = (generated_document, property, value, document_index) => {
-  // console.log('documents.build_value');
+     //console.log('documents.build_value');
   if (property.data) {
     // if there is a pre_build block
     if (property.data.pre_build) {
@@ -182,7 +187,7 @@ const build_array = (generated_document, property, value, document_index) => {
 
 // builds a complex array
 const build_array_complex = (generated_document, property, value, number, document_index) => {
-  // console.log('documents.build_array_complex');
+     //console.log('documents.build_array_complex');
   let model_paths = get_model_paths(property.items);
   let document_paths = get_document_paths(property.items);
   for (let i = 0; i < number; i++) {
@@ -193,7 +198,7 @@ const build_array_complex = (generated_document, property, value, number, docume
 
 // builds a simple array
 const build_array_simple = (generated_document, property, value, number, document_index) => {
-  // console.log('documents.build_array_simple');
+     //console.log('documents.build_array_simple');
   for (let i = 0; i < number; i++) {
     value[i] = build_value(
       generated_document,
@@ -207,10 +212,12 @@ const build_array_simple = (generated_document, property, value, number, documen
 
 // processes a document after generation
 const build_process = (current_model, generated_document, model_paths, document_paths, document_index) => {
-  // console.log('documents.build_process');
+     //console.log('documents.build_process');
   let key;
   try {
     model_paths.forEach((path, index) => {
+      //console.log("=-=-=-=-")
+      //console.log(path)
       key = document_paths[index]; // set a key for error messaging
       objectPath.set(
         generated_document,
@@ -224,6 +231,8 @@ const build_process = (current_model, generated_document, model_paths, document_
         )
       );
     });
+    //console.log("== generated doc is =====")
+    //console.log(generated_document)
     return generated_document;
   } catch (e) {
     throw new Error(`Error: Transforming Properties in Model: "${current_model.name}" for Key: "${key}", Reason: ${e.message}`);

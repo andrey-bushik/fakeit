@@ -12,7 +12,7 @@ let inputs = {};
 // pre run setup / handle settings
 const prepare = (options) => new Promise((resolve, reject) => {
   try {
-    // console.log('input.prepare');
+   // console.log('input.prepare');
     if (options.input) {
       list(options)
         .then(filter)
@@ -31,7 +31,7 @@ const prepare = (options) => new Promise((resolve, reject) => {
 
 // gets the available input files
 const list = (options) => new Promise((resolve, reject) => {
-  // console.log('input.list');
+  //console.log('input.list');
   try {
     utils.is_directory(options.input)
       .then(utils.read_directory)
@@ -48,7 +48,7 @@ const list = (options) => new Promise((resolve, reject) => {
 
 // filter files for valid input formats: csv, json, cson, yaml and zip
 const filter = async (files) => {
-  // console.log('input.filter');
+  //console.log('input.filter');
   files = files.filter((file) => {
     return file.match(/\.(csv|json|cson|ya?ml|zip)$/i);
   });
@@ -60,7 +60,7 @@ const filter = async (files) => {
 
 // loop over all of the found yaml files and load them
 const load = async (files) => {
-  // console.log('input.load', files);
+  //console.log('input.load', files);
   let data = [];
   files.forEach((file) => {
     file = path.resolve(file); // resolve the full path
@@ -79,7 +79,7 @@ const load = async (files) => {
 
 // handles parsing each of the supported formats
 const parse = (name, type, content) => new Promise((resolve, reject) => {
-  // console.log('input.parse');
+  //console.log('input.parse');
   let result;
   switch (type) {
   case 'json':
@@ -110,7 +110,7 @@ const parse = (name, type, content) => new Promise((resolve, reject) => {
 
 // handles processing a zip archive entries and parsing their contents
 const load_zip_file = (file) => new Promise((resolve, reject) => {
-  // console.log('input.load_zip_file');
+  //console.log('input.load_zip_file');
   try {
     let zip = new AdmZip(file);
     let entries = [];
@@ -144,7 +144,7 @@ const parse_json = (content) => new Promise((resolve, reject) => {
 
 // parses a yaml string
 const parse_yaml = (content) => new Promise((resolve, reject) => {
-  // console.log('input.parse_yaml');
+  //console.log('input.parse_yaml');
   try {
     resolve(yaml.parse(content));
   } catch (e) {
@@ -154,7 +154,7 @@ const parse_yaml = (content) => new Promise((resolve, reject) => {
 
 // parses a csv string
 const parse_csv = (content) => new Promise((resolve, reject) => {
-  // console.log('input.parse_csv');
+  //console.log('input.parse_csv');
   csv_parse(content, { columns: true }, (err, result) => {
     if (err) {
       reject(err);
@@ -166,7 +166,7 @@ const parse_csv = (content) => new Promise((resolve, reject) => {
 
 // parses a cson string
 const parse_cson = (content) => new Promise((resolve, reject) => {
-  // console.log('input.load_cson_file');
+  //console.log('input.load_cson_file');
   cson.parse(content, (err, result) => {
     if (err) {
       reject(err);

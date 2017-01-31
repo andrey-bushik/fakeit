@@ -19,7 +19,7 @@ export default function start(options = {}) {
   options = Object.assign({}, defaults, options);
   return new Promise((resolve, reject) => {
     try {
-      // console.log('generator.start');
+      //console.log('generator.start');
       validate(options);
       input.prepare(options)
         .then(() => models.prepare(options))

@@ -26,7 +26,7 @@ let archive_entries_processed = 0; // the number of entries that have been succe
 
 // pre run setup / handle settings
 const prepare = async ({ format, limit, timeout, exclude, ...options }, resolve, reject, model_documents_count) => {
-  // console.log('output.prepare');
+     //console.log('output.prepare');
   settings = {
     ...options,
     resolve,
@@ -108,7 +108,7 @@ const set_archive_entries_to_process = () => {
 
 // prepare the connection to couchbase
 const setup_couchbase = () => new Promise((resolve, reject) => {
-  // console.log('output.setup_couchbase');
+     //console.log('output.setup_couchbase');
   try {
     const cluster = new couchbase.Cluster(settings.server);
     couchbase_bucket = cluster.openBucket(settings.bucket, settings.password || '', (err) => {
@@ -118,7 +118,7 @@ const setup_couchbase = () => new Promise((resolve, reject) => {
         if (settings.timeout && parseInt(settings.timeout)) {
           couchbase_bucket.operationTimeout = parseInt(settings.timeout);
         }
-        // console.log(`Connection to "${settings.bucket}" bucket at "${settings.server}" was successful`);
+           console.log(`Connection to "${settings.bucket}" bucket at "${settings.server}" was successful`);
         resolve();
       }
     });
@@ -129,7 +129,7 @@ const setup_couchbase = () => new Promise((resolve, reject) => {
 
 // prepare the connection to the sync gateway
 const setup_syncgateway = () => new Promise((resolve, reject) => {
-  // console.log('output.setup_syncgateway');
+     //console.log('output.setup_syncgateway');
   try {
     // there might not need to be authentication if the sync db is allowing guest
     if (settings.username && settings.password) {
@@ -170,7 +170,7 @@ const setup_syncgateway = () => new Promise((resolve, reject) => {
 
 // prepare a zip stream for the destination output
 const setup_zip = async () => {
-  // console.log('output.setup_zip');
+     //console.log('output.setup_zip');
   try {
     archive_entries_processed = 0;
     archive_out = fs.createWriteStream(path.join(settings.destination, settings.archive));
@@ -201,10 +201,10 @@ const setup_zip = async () => {
 
 // handles saving a model after a run
 const save = (model, documents) => new Promise((resolve, reject) => {
-  // console.log('output.save');
+     //console.log('output.save');
   try {
     if (settings.exclude.indexOf(model.name) === -1) {
-      // console.log(`Saving ${documents.length} documents for ${model.name} model`);
+         //console.log(`Saving ${documents.length} documents for ${model.name} model`);
       models_processed += 1; // keep track of the number of models processed
       let result;
       if (settings.archive) { // if we are generating an archive
@@ -233,7 +233,7 @@ const save = (model, documents) => new Promise((resolve, reject) => {
 
 // saves each document to a couchbase instance
 const save_couchbase = async (model, documents) => {
-  // console.log('output.save_couchbase');
+     //console.log('output.save_couchbase');
   const generate_calls = function * (docs) { // generator function to handling saving to cb
     for (let i = 0; i < docs.length; i++) {
       yield upsert(docs[i][model.key], docs[i]);
@@ -250,7 +250,7 @@ const save_couchbase = async (model, documents) => {
 
 // upserts a document into couchbase
 const upsert = (key, data) => new Promise((resolve, reject) => {
-  // console.log('output.upsert');
+     //console.log('output.upsert');
   try {
     couchbase_bucket.upsert(key.toString(), data, (err) => {
       if (err) {
@@ -266,7 +266,7 @@ const upsert = (key, data) => new Promise((resolve, reject) => {
 
 // saves each document to a sync gateway
 const save_syncgateway = async (model, documents) => {
-  // console.log('output.save_syncgateway');
+     //console.log('output.save_syncgateway');
   const generate_calls = function * (docs) { // generator function to handling saving to sg
     for (let i = 0; i < docs.length; i++) {
       yield syncgateway_send(docs[i][model.key], docs[i]);
@@ -282,7 +282,7 @@ const save_syncgateway = async (model, documents) => {
 };
 
 const syncgateway_send = (key, data) => new Promise((resolve, reject) => {
-  // console.log('output.syncgateway_send');
+     //console.log('output.syncgateway_send');
   try {
     let options = {
       url: settings.server + '/' + settings.bucket + '/' + encodeURIComponent(key),
@@ -353,7 +353,7 @@ const save_archive = (model, documents) => new Promise((resolve, reject) => {
 
 // appends files to the zip archive
 const append_zip = (data, entry_name) => new Promise((resolve, reject) => {
-  // console.log('output.append_zip', entry_name);
+     //console.log('output.append_zip', entry_name);
   try {
     archive.append(
       data,
@@ -369,7 +369,7 @@ const append_zip = (data, entry_name) => new Promise((resolve, reject) => {
 
 // saves each document to an individual file
 const save_files = async (model, documents) => {
-  // console.log('save_files', documents);
+     //console.log('save_files', documents);
   let writes = [];
   for (let i = 0; i < documents.length; i++) {
     let filename = `${get_key(model, documents[i])}.${settings.output}`;
@@ -383,7 +383,7 @@ const save_files = async (model, documents) => {
 
 // saves each document to an single csv file {
 const save_csv = (model, documents) => new Promise((resolve, reject) => {
-  // console.log('save_csv', documents);
+    // console.log('save_csv', documents);
   try {
     create_csv(documents)
       .then((transformed_data) => write_file(model.name + '.' + settings.output, transformed_data))
@@ -397,7 +397,7 @@ const save_csv = (model, documents) => new Promise((resolve, reject) => {
 
 // creates a csv string from the documents
 const create_csv = (documents) => new Promise((resolve, reject) => {
-  // console.log('output.create_csv');
+     //console.log('output.create_csv');
   try {
     csv_stringify(documents, { header: true, quotedString: true }, (err, transformed_data) => {
       if (err) {
@@ -413,7 +413,7 @@ const create_csv = (documents) => new Promise((resolve, reject) => {
 
 // creates a csv string from the documents
 const flush_console = (model, documents) => new Promise((resolve, reject) => {
-  // console.log('output.flush_console');
+     //console.log('output.flush_console');
   try {
     let writes = [];
     if (settings.output === 'csv') {
@@ -439,7 +439,7 @@ const flush_console = (model, documents) => new Promise((resolve, reject) => {
 
 // determines whether or not the entire generation can be finalized
 const finalize = async () => {
-  // console.log('output.finalize');
+     //console.log('output.finalize');
   if (!settings.archive) { // if we are generating an archive
     if (models_to_process === models_processed) {
       if (!settings.destination === 'couchbase' && couchbase_bucket.connected) {
@@ -482,7 +482,7 @@ const write_file = (filename, data) => new Promise((resolve, reject) => {
 
 // error cleanup to delete generated files, etc.
 const error_cleanup = () => new Promise((resolve, reject) => {
-  // console.log('output.error_cleanup');
+     //console.log('output.error_cleanup');
   try {
     if (settings.archive) {
       // prevent the close method from being called to the generation is not resolved
@@ -507,7 +507,7 @@ const error_cleanup = () => new Promise((resolve, reject) => {
 
 // gets the key for a document
 const get_key = (model, doc) => {
-  // console.log('output.get_key');
+     //console.log('output.get_key');
   let key;
   if (model.key.build) {
     key = model.key.build.apply(doc, [ null, null, null, faker, chance, null ]);

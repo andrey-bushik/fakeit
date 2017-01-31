@@ -1,0 +1,163 @@
+name: YCSB
+type: object
+key: _id
+data:
+  fixed: 1000
+properties:
+  _id:
+    type: string
+    data:
+      post_build: "return 'ycsb_' + this.doc_id;"
+  doc_id:
+    type: integer
+    description: The document id
+    data:
+      build: "return document_index + 1"
+  gid:
+    type:
+    description: "guid"
+    data:
+      build: "return chance.guid();"
+  index:
+    type: integer
+    description: "integer 0 - 100"
+    data:
+      build: "return chance.integer({min: 0, max: 100});"
+  routing_number:
+    type: integer
+    description: "integer 1K - 100K"
+    data:
+      build: "return chance.integer({min: 1000, max: 100000});"
+  company_name:
+    type: string
+    description: "company name - string"
+    data:
+      build: "return chance.bool()  ? faker.company.companyName() : null;"
+  company_code:
+    type: string
+    description: "string AAAAAAAAAA-ZZZZZZZZZZ"
+    data:
+      build: "return chance.string({length: 10, pool:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});"
+  first_name:
+    type: string
+    description: "First name - string"
+    data:
+      fake: "{{name.firstName}}"
+  middle_name:
+    type: string
+    description: "Middle name - string"
+    data:
+      build: "return chance.bool() ? chance.name({middle: true}).split(' ')[1] : null;"
+  last_name:
+    type: string
+    description: "Last name - string"
+    data:
+      fake: "{{name.lastName}}"
+  age:
+    type: integer
+    description: "integer 18 - 100"
+    data:
+      build: "return chance.integer({min: 18, max: 100});"
+  ballance_current:
+    type: string
+    description: "currency"
+    data:
+      build: "return chance.dollar();"
+  ballance_average:
+    type: string
+    description: "currency"
+    data:
+      build: "return chance.dollar();"
+  picture:
+    type: string
+    description: "URL"
+    data:
+      build: "return chance.avatar({protocol: 'https', fileExtention:'jpg'});"
+  phone:
+    type: string
+    description: "phone"
+    data:
+      build: "return chance.phone();"
+  dob:
+    type: string
+    description: "Date"
+    data:
+      build: "return chance.bool() ? new Date(faker.date.past()).toISOString().split('T')[0] : null;"
+  email:
+    type: string
+    description: "email"
+    data:
+      fake: "{{internet.email}}"
+  isActive:
+    type: boolean
+    description: "active boolean"
+    data:
+      build: "return chance.bool();"
+  address:
+    type: object
+    description: An object of the Address
+    schema:
+      $ref: '#/definitions/Address'
+  devices:
+    type: array
+    description: "Array of strings - device id"
+    items:
+      $ref: '#/definitions/Device'
+      data:
+        min: 1
+        max: 5
+  children:
+    type: array
+    description: "An array of Children objects"
+    items:
+      $ref: '#/definitions/Children'
+      data:
+        min: 0
+        max: 5
+definitions:
+  Children:
+    type: object
+    properties:
+      first_name:
+        type: string
+        description: "first name - string"
+        data:
+          fake: "{{name.firstName}}"
+      gender:
+        type: string
+        description: "gender M or F"
+        data:
+          build: "return chance.bool({likelihood: 50})? faker.random.arrayElement(['M', 'F']) : null;"
+      age:
+        type: integer
+        description: "age - 1 to 17"
+        data:
+          build: "return chance.integer({min: 1, max: 17})"
+  Address:
+    type: object
+    properties:
+      street:
+        type: string
+        description: The address 1
+        data:
+          build: "return faker.address.streetAddress() + ' ' + faker.address.streetSuffix();"
+      city:
+        type: string
+        description: The locality
+        data:
+          build: "return faker.address.city();"
+      zip:
+        type: string
+        description: The zip code / postal code
+        data:
+          build: "return faker.address.zipCode();"
+      country:
+        type: string
+        description: The country
+        data:
+          build: "return faker.address.country();"
+  Device:
+    type: string
+    description: "string 000000-000 to 999999-999"
+    data:
+      build: "return chance.string({length: 6, pool: '0123456789'}).concat('-').concat(chance.string({length: 3, pool: '0123456789'}));"

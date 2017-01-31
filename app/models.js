@@ -35,7 +35,7 @@ const prepare = (options) => new Promise((resolve, reject) => {
 
 // gets the available model yaml files from the current working directory
 const list = (options) => new Promise((resolve, reject) => {
-  // console.log('models.list');
+  //console.log('models.list');
   try {
     utils.is_directory(options.models)
       .then(utils.read_directory)
@@ -52,7 +52,7 @@ const list = (options) => new Promise((resolve, reject) => {
 
 // filter files for valid models
 const filter = async (files) => {
-  // console.log('models.filter');
+  //console.log('models.filter');
   files = files.filter((file) => {
     return file.match(/\.ya?ml$/i);
   });
@@ -64,7 +64,7 @@ const filter = async (files) => {
 
 // loop over all of the found yaml files and load them
 const load = async (files) => {
-  // console.log('models.load');
+  //console.log('models.load');
   let tmp = [];
   model_count = files.length;
   files.forEach((file) => {
@@ -75,7 +75,7 @@ const load = async (files) => {
 
 // load and conver a yaml file to a json object
 const load_yaml_file = (file) => new Promise((resolve, reject) => {
-  // console.log('models.load_yaml_file');
+  //console.log('models.load_yaml_file');
   yaml.load(path.resolve(file), (result) => {
     if (result) {
       models[result.name || file] = result; // add the parsed model to the global object
@@ -88,7 +88,7 @@ const load_yaml_file = (file) => new Promise((resolve, reject) => {
 
 // validate the model
 const validate = async () => {
-  // console.log('models.validate');
+  //console.log('models.validate');
   for (let model in models) {
     if (!models[model].name) {
       throw new Error(`The model ${model} must have a "name" property.`);
@@ -104,7 +104,7 @@ const validate = async () => {
 
 // parse each of the model properties for a build functions
 const parse = async () => {
-  // console.log('models.parse');
+  //console.log('models.parse');
   try {
     let parsed = [];
     for (let model in models) { // loop over each model
@@ -119,7 +119,7 @@ const parse = async () => {
 };
 
 const parse_model = async (model) => {
-  // console.log('models.parse_model');
+     //console.log('models.parse_model');
   await parse_model_functions(model);
   await parse_model_references(model);
   await parse_model_types(model);
@@ -128,7 +128,7 @@ const parse_model = async (model) => {
 
 // searches the model for any of the pre / post run and build functions and generates them
 const parse_model_functions = async (model) => {
-  // console.log('models.parse_model_functions');
+     //console.log('models.parse_model_functions');
   let results = utils.object_search(models[model], /((pre|post)_run)|(pre_|post_)?build$/);
   results.forEach((function_path) => {
     try {
@@ -148,7 +148,7 @@ const parse_model_functions = async (model) => {
 
 // searches the model for any '$ref' values that are pointing to definitions, sub_models, etc. and copies the reference to the schema
 const parse_model_references = async (model) => {
-  // console.log('models.parse_model_references');
+     //console.log('models.parse_model_references');
   let pattern = /\.(schema|items).\$ref$/;
   let results = utils.object_search(models[model], pattern);
   results.sort(); // sort the array so definitions come first before properties, this allows definitions to have definitions
@@ -164,7 +164,7 @@ const parse_model_references = async (model) => {
 
 // searches the model for any properties or items and makes sure the defaults exist
 const parse_model_types = async (model) => {
-  // console.log('models.parse_model_properties');
+     //console.log('models.parse_model_properties');
   let results = utils.object_search(models[model], /.*properties\.[^.]+(\.items)?$/);
   results.forEach((type_path) => {
     let property = objectPath.get(models[model], type_path);
@@ -178,7 +178,7 @@ const parse_model_types = async (model) => {
 
 // sets any model defaults that are not defined
 const parse_model_defaults = async (model) => {
-  // console.log('models.parse_model_defaults');
+     //console.log('models.parse_model_defaults');
   // find properties or items that do not have a data block and assign it
   let results = utils.object_search(models[model], /^(.*properties\.[^.]+)$/);
   results.forEach((data_path) => {
@@ -214,7 +214,7 @@ const parse_model_defaults = async (model) => {
 
 // resolve the dependencies and establish the order the models should be parsed in
 const resolve_dependencies = async () => {
-  // console.log('models.resolve_dependencies');
+     //console.log('models.resolve_dependencies');
   let counter = 0;
   // continue looping until all dependencies are resolve or we have looped (model_count * 5) times at which point
   // not all dependencies could be resolved and we will just error to prevent an infinte loop
@@ -235,7 +235,7 @@ const resolve_dependencies = async () => {
     // update error to include which models could not be resolved
     throw new Error(`The following Model Dependencies could not be resolved: ${unresolvable_dependencies().join(', ')}`);
   }
-  // console.log('Models will be generated in the following order: %s', model_order.join(', '));
+     //console.log('Models will be generated in the following order: %s', model_order.join(', '));
 };
 
 // builds an array of all of the dependencies that could not be resolved
@@ -273,7 +273,7 @@ const get_document_counts = () => {
 
 // resolve the dependencies and establish the order the models should be parsed in
 const set_document_counts = async () => {
-  // console.log('models.set_document_counts');
+  //console.log('models.set_document_counts');
   model_order.forEach((v) => {
     let current_model = models[v];
     let number;
@@ -289,8 +289,9 @@ const set_document_counts = async () => {
 
 // handles generation of data for each model
 const generate = async (options) => {
-  // console.log('models.generate');
+  //console.log('models.generate');
   for (let i = 0; i < model_order.length; i++) { // loop over each model and execute in order of dependency
+    //console.log("= documents run for each model")
     await documents.run(// eslint-disable-line babel/no-await-in-loop
       models[model_order[i]],
       model_documents_count[models[model_order[i]].name],
