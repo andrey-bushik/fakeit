@@ -7,7 +7,7 @@ properties:
   _id:
     type: string
     data:
-      post_build: "return 'ycsb_' + this.doc_id;"
+      post_build: "return '' + this.doc_id + '_ycsb';"
   doc_id:
     type: integer
     description: The document id
