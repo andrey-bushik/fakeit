@@ -122,7 +122,7 @@ const initialize_value = (data_type) => {
     value = {};
   } else if ('number,integer,double,long,float'.indexOf(data_type) !== -1) {
     value = 0;
-  } else if (data_type === 'array') {
+  } else if (data_type === 'array' || data_type === 'arrays') {
     value = [];
   } else if ('boolean,bool'.indexOf(data_type) !== -1) {
     value = false;
@@ -174,6 +174,7 @@ const build_value = (generated_document, property, value, document_index) => {
   return value;
 };
 
+
 // builds an array
 const build_array = (generated_document, property, value, document_index) => {
   let number = property.items.data.fixed || chance.integer({ min: property.items.data.min || 0, max: property.items.data.max || 0 });
@@ -185,8 +186,65 @@ const build_array = (generated_document, property, value, document_index) => {
   return value;
 };
 
+
+// builds a simple array
+const build_array_simple = (generated_document, property, value, number, document_index) => {
+     //console.log('documents.build_array_simple');
+  if (property.items.data.submax > 0) {
+    for (let i = 0; i < number; i++) {
+        let subnum = chance.integer({ min: property.items.data.submin || 0, max: property.items.data.submax || 0 });
+        value[i] = new Array(subnum);
+        for (let j = 0; j < subnum; j++) {
+            value[i][j] = build_simple_array_item(generated_document, property, value, number, document_index)
+        }
+    }
+  } else {
+      for (let i = 0; i < number; i++) {
+        value[i] = build_simple_array_item(generated_document, property, value, number, document_index)
+      }
+  }
+
+  return value;
+};
+
+const build_simple_array_item = (generated_document, property, value, number, document_index) => {
+    return build_value(
+                 generated_document,
+                 property.items,
+                 initialize_value(property.items.type),
+                 document_index
+               ); // eslint-disable-line babel/no-await-in-loop
+}
+
+
 // builds a complex array
 const build_array_complex = (generated_document, property, value, number, document_index) => {
+     //console.log('documents.build_array_complex');
+  let model_paths = get_model_paths(property.items);
+  let document_paths = get_document_paths(property.items);
+  if (property.items.data.submax > 0) {
+     for (let i = 0; i < number; i++) {
+         let subnum = chance.integer({ min: property.items.data.submin || 0, max: property.items.data.submax || 0 });
+         value[i] = new Array(subnum);
+         for (let j = 0; j < subnum; j++) {
+             value[i][j] = build(property.items, model_paths, document_paths, document_index);
+         }
+     }
+   } else {
+       for (let i = 0; i < number; i++) {
+         value[i] = build(property.items, model_paths, document_paths, document_index);
+       }
+   }
+
+  return value;
+};
+
+
+
+
+
+// builds a complex array
+const _build_array_complex = (generated_document, property, value, number, document_index) => {
      //console.log('documents.build_array_complex');
   let model_paths = get_model_paths(property.items);
   let document_paths = get_document_paths(property.items);
@@ -196,19 +254,6 @@ const build_array_complex = (generated_document, property, value, number, docume
   return value;
 };
 
-// builds a simple array
-const build_array_simple = (generated_document, property, value, number, document_index) => {
-     //console.log('documents.build_array_simple');
-  for (let i = 0; i < number; i++) {
-    value[i] = build_value(
-      generated_document,
-      property.items,
-      initialize_value(property.items.type),
-      document_index
-    ); // eslint-disable-line babel/no-await-in-loop
-  }
-  return value;
-};
 
 // processes a document after generation
 const build_process = (current_model, generated_document, model_paths, document_paths, document_index) => {
