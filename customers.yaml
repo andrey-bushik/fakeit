@@ -151,6 +151,7 @@ properties:
     type: array
     data:
       build: |
+        "use strinct";
         const orders = [];
         if ((globals.total_orders - globals.used_orders) > 4) {
           for (let i = 0, rand = chance.integer({ min: 1, max: 5 }); i < rand; i++) {
