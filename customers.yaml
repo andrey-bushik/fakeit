@@ -151,10 +151,9 @@ properties:
     type: array
     data:
       build: |
-        "use strinct";
+        "use strict";
         const orders = [];
         if ((globals.total_orders - globals.used_orders) > 4) {
-          "use strinct";
           for (let i = 0, rand = chance.integer({ min: 1, max: 5 }); i < rand; i++) {
             orders.push(documents.Orders[globals.used_orders]._id)
             globals.used_orders++;
