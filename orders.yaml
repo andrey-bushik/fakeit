@@ -14,10 +14,22 @@ properties:
     type: string
     data:
       build: "return 'not implemented'"
-  sold_datetime:
+  year:
     type: string
     data:
-      build: "return chance.date();"
+      build: "return chance.year({min: 2000, max: 2017});"
+  month:
+    type: string
+    data:
+      build: "return chance.month();"
+  day:
+    type: integer
+    data:
+      build: "return chance.integer({min: 1, max: 30});"
+  weekday:
+    type: string
+    data:
+      build: "return faker.date.weekday();"
   quantity:
     type: integer
     data:
