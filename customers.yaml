@@ -210,9 +210,9 @@ definitions:
           build: "return faker.address.city();"
       zip:
         type: string
-        description: The zip code / postal code
+        description: "The zip code, US only"
         data:
-          build: "return faker.address.zipCode();"
+          build: "return chance.zip({plusfour: false});"
       country:
         type: string
         description: The country
