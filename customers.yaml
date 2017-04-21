@@ -47,7 +47,7 @@ properties:
     type: string
     description: "Date"
     data:
-      build: "return chance.bool() ? new Date(faker.date.past()).toISOString().split('T')[0] : null;"
+      build: "return new Date(faker.date.past()).toISOString().split('T')[0];"
   email:
     type: string
     description: "email"
