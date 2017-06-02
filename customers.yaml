@@ -182,14 +182,19 @@ definitions:
           build: "return faker.address.city();"
       zip:
         type: string
-        description: The zip code / postal code
+        description: The zip code / postal code, US only
         data:
-          build: "return faker.address.zipCode();"
+          build: "return chance.zip({plusfour: false});"
       country:
         type: string
         description: The country
         data:
           build: "return faker.address.country();"
+      geo_region:
+        type: string
+        description: "13 regions, for pagination queries"
+        data:
+          build: "return  chance.pickone(['Central Africa', 'Northern Africa', 'South Africa', 'Caribbean', 'Central America', 'South America', 'Northern America', 'Asia', 'Europe', 'European Union', 'Middle East', 'Oceania', 'Other']);"
       prev_address:
         type: object
         description: An object of the Address
