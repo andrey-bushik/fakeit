@@ -1,0 +1,108 @@
+{
+  "apply_percent": 100.0, 
+  "zip":
+  {
+    "values": [
+      "04457-0000",
+      "07172-0000",
+      "08310-0000",
+      "11370-0000",
+      "13321-0000",
+      "13463-0000",
+      "13823-0000",
+      "16045-0000",
+      "16336-0000",
+      "16391-0000",
+      "17891-0000",
+      "23896-0000",
+      "24161-0000",
+      "27951-0000",
+      "29330-0000",
+      "29449-0000",
+      "36368-0000",
+      "37874-0000",
+      "37912-0000",
+      "41871-0000"
+    ]
+  },
+  "country":
+  { 
+    "values": [
+      "Albania COUNTRY",
+      "Armenia COUNTRY",
+      "Azerbaijan COUNTRY",
+      "Bahamas COUNTRY",
+      "Benin COUNTRY",
+      "Botswana COUNTRY",
+      "Bulgaria COUNTRY",
+      "Burkina Faso COUNTRY",
+      "Burundi COUNTRY",
+      "Cambodia COUNTRY",
+      "Central African Republic COUNTRY",
+      "Costa Rica COUNTRY",
+      "Croatia COUNTRY",
+      "Ethiopia COUNTRY",
+      "French Southern Territories COUNTRY",
+      "Gambia COUNTRY",
+      "Guadeloupe COUNTRY",
+      "Guatemala COUNTRY",
+      "Iceland COUNTRY",
+      "India COUNTRY"
+    ]
+  },
+  "city":
+  {
+    "values": [
+      "Aliviaberg CITY",
+      "Ashlymouth CITY",
+      "Bethside CITY",
+      "Buckridgeside CITY",
+      "Darbyview CITY",
+      "Dariofurt CITY",
+      "Darronmouth CITY",
+      "Dawsonmouth CITY",
+      "East Delbert CITY",
+      "East Jerrodbury CITY",
+      "East Tarashire CITY",
+      "Federicoburgh CITY",
+      "Florenciomouth CITY",
+      "Framifort CITY",
+      "Goldenstad CITY",
+      "Hackettmouth CITY",
+      "Hettingerbury CITY",
+      "Hillltown CITY",
+      "Howardborough CITY",
+      "Johnnyton CITY"
+    ]
+  },
+  "device":
+  {
+    "values": [
+      "DEVA1",
+      "DEVA2",
+      "DEVA3",
+      "DEVA4",
+      "DEVA5",
+      "DEVB1",
+      "DEVB2",
+      "DEVB3",
+      "DEVB4",
+      "DEVB5",
+      "DEVC1",
+      "DEVC2",
+      "DEVC3",
+      "DEVC4",
+      "DEVC5",
+      "DEVD1",
+      "DEVD2",
+      "DEVD3",
+      "DEVD4",
+      "DEVD5"
+    ]
+  },
+  "dob":
+  {
+    "startdate": "2017-01-01",
+    "enddate": "2017-08-01"
+  }
+}

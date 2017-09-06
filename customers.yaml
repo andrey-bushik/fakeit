@@ -1,3 +1,4 @@
+
 name: Customers
 type: object
 key: _id
@@ -6,6 +7,13 @@ data:
   pre_run: |
     globals.total_orders = documents.Orders.length
     globals.used_orders = 0
+  pre_build: |
+    "use strict";
+    globals.fields = null;
+    if ((inputs.fields != null) && (chance.floating({min: 0, max: 100}) <= inputs.fields.apply_percent))
+    {
+      globals.fields = inputs.fields;
+    }
   dependencies:
     - Orders
 properties:
@@ -47,7 +55,7 @@ properties:
     type: string
     description: "Date"
     data:
-      build: "return new Date(faker.date.past()).toISOString().split('T')[0];"
+      build: "return new Date(globals.fields != null ? faker.date.between(globals.fields.dob.startdate, globals.fields.dob.enddate) : faker.date.past()).toISOString().split('T')[0];"
   email:
     type: string
     description: "email"
@@ -166,7 +174,7 @@ definitions:
     type: string
     description: "string AA-001 with zipf step distribution"
     data:
-      build: "return chance.weighted(['AA', 'BB', 'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN', 'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ'], [1, 0.5, 0.333, 0.25, 0.2, 0.167, 0.143, 0.125, 0.111, 0.1, 0.091, 0.083, 0.077, 0.071, 0.067, 0.063, 0.059, 0.056, 0.053, 0.050, 0.048, 0.045, 0.043, 0.042, 0.04, 0.038]).concat('-').concat(chance.string({length: 3, pool: '0123456789'}));"
+      build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.device.values) : chance.weighted(['AA', 'BB', 'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN', 'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ'], [1, 0.5, 0.333, 0.25, 0.2, 0.167, 0.143, 0.125, 0.111, 0.1, 0.091, 0.083, 0.077, 0.071, 0.067, 0.063, 0.059, 0.056, 0.053, 0.050, 0.048, 0.045, 0.043, 0.042, 0.04, 0.038]).concat('-').concat(chance.string({length: 3, pool: '0123456789'}));"
   Address:
     type: object
     properties:
@@ -184,12 +192,12 @@ definitions:
         type: string
         description: The zip code / postal code, US only
         data:
-          build: "return chance.zip({plusfour: false});"
+          build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.zip.values) : chance.zip({plusfour: false});"
       country:
         type: string
         description: The country
         data:
-          build: "return faker.address.country();"
+          build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.country.values) : faker.address.country();"
       geo_region:
         type: string
         description: "13 regions, for pagination queries"
@@ -217,7 +225,7 @@ definitions:
         type: string
         description: "The zip code, US only"
         data:
-          build: "return chance.zip({plusfour: false});"
+          build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.zip.values) : chance.zip({plusfour: false});"
       country:
         type: string
         description: The country
@@ -250,14 +258,14 @@ definitions:
     type: string
     description: "city"
     data:
-      build: "return faker.address.city();"
+      build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.city.values) : faker.address.city();"
   Visited_places:
     type: object
     properties:
       country:
         type: string
         data:
-          build: "return faker.address.country();"
+          build: "return (globals.fields != null) ? faker.random.arrayElement(globals.fields.country.values) : faker.address.country();"
       cities:
         type: array
         description: "Array of strings - device id"
