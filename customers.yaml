@@ -47,7 +47,7 @@ properties:
     type: string
     description: "Date"
     data:
-      build: "return new Date(faker.date.past()).toISOString().split('T')[0];"
+      build: "return new Date(faker.date.between('1980-01-01', '1999-12-31')).toISOString().split('T')[0];"
   email:
     type: string
     description: "email"
@@ -164,9 +164,9 @@ properties:
 definitions:
   Device:
     type: string
-    description: "string AA-001 with zipf step distribution"
+    description: "string AA-1 to СС-9"
     data:
-      build: "return chance.weighted(['AA', 'BB', 'CC', 'DD', 'EE', 'FF', 'GG', 'HH', 'II', 'JJ', 'KK', 'LL', 'MM', 'NN', 'OO', 'PP', 'QQ', 'RR', 'SS', 'TT', 'UU', 'VV', 'WW', 'XX', 'YY', 'ZZ'], [1, 0.5, 0.333, 0.25, 0.2, 0.167, 0.143, 0.125, 0.111, 0.1, 0.091, 0.083, 0.077, 0.071, 0.067, 0.063, 0.059, 0.056, 0.053, 0.050, 0.048, 0.045, 0.043, 0.042, 0.04, 0.038]).concat('-').concat(chance.string({length: 3, pool: '0123456789'}));"
+      build: "return chance.string({length: 2, pool: 'ABC'}).concat('-').concat(chance.string({length: 1, pool: '0123456789'}));"
   Address:
     type: object
     properties:
@@ -190,11 +190,6 @@ definitions:
         description: The country
         data:
           build: "return faker.address.country();"
-      geo_region:
-        type: string
-        description: "13 regions, for pagination queries"
-        data:
-          build: "return  chance.pickone(['Central Africa', 'Northern Africa', 'South Africa', 'Caribbean', 'Central America', 'South America', 'Northern America', 'Asia', 'Europe', 'European Union', 'Middle East', 'Oceania', 'Other']);"
       prev_address:
         type: object
         description: An object of the Address
@@ -251,6 +246,11 @@ definitions:
     description: "city"
     data:
       build: "return faker.address.city();"
+  Visited_activities:
+    type: string
+    description: "activity"
+    data:
+      build: "return chance.pickone(['museum', 'architecture', 'shopping', 'food', 'show', 'exibition', 'theatre', 'education',  'business', 'dating', 'nightlife', 'water park', 'amusement park', 'scenic', 'camping', 'sport', 'health', 'fashion', 'family', 'other']);"
   Visited_places:
     type: object
     properties:
@@ -260,12 +260,21 @@ definitions:
           build: "return faker.address.country();"
       cities:
         type: array
-        description: "Array of strings - device id"
+        description: "Array of strings - visited cities"
         items:
           $ref: '#/definitions/Visited_cities'
           data:
             min: 1
             max: 5
+      activities:
+        type: array
+        description: "Array of strings - activity categories"
+        items:
+          $ref: '#/definitions/Visited_activities'
+          data:
+            min: 1
+            max: 5
+
   Property_owner:
     type: object
     properties:
