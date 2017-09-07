@@ -188,8 +188,8 @@ definitions:
       country:
         type: string
         description: The country
-        data:
-          build: "return faker.address.country();"
+        schema:
+          $ref: '#/definitions/Short_country_list'
       prev_address:
         type: object
         description: An object of the Address
@@ -216,8 +216,8 @@ definitions:
       country:
         type: string
         description: The country
-        data:
-          build: "return faker.address.country();"
+        schema:
+          $ref: '#/definitions/Short_country_list'
       property_current_owner:
         type: object
         description: "owner object"
@@ -256,8 +256,8 @@ definitions:
     properties:
       country:
         type: string
-        data:
-          build: "return faker.address.country();"
+        schema:
+          $ref: '#/definitions/Short_country_list'
       cities:
         type: array
         description: "Array of strings - visited cities"
@@ -274,7 +274,11 @@ definitions:
           data:
             min: 1
             max: 5
-
+  Short_country_list:
+    type: string
+    description: "activity"
+    data:
+      build: "return chance.pickone(['Belgium', 'France', 'Germany', 'Italy', 'Luxembourg', 'Netherlands', 'Denmark', 'Ireland', 'United Kingdom', 'Greece', 'Portugal', 'Spain', 'Austria', 'Finland', 'Sweden', 'Cyprus', 'Czech Republic', 'United States', 'Canada', 'Estonia', 'Hungary', 'Latvia', 'Lithuania', 'Malta', 'Poland', 'Slovakia', 'Slovenia', 'Bulgaria', 'Romania', 'Croatia']);"
   Property_owner:
     type: object
     properties:
