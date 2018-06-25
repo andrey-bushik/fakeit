@@ -12,7 +12,7 @@ properties:
     type: string
     data:
       post_build: |
-        return 'order:::' + globals.order_id++;
+        return 'order---' + globals.order_id++;
   customer_id:
     type: string
     data:

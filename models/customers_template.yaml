@@ -14,7 +14,7 @@ properties:
     type: string
     data:
       post_build: |
-        return 'customer:::' + globals.customer_id++;
+        return 'customer---' + globals.customer_id++;
   doc_id:
     type: integer
     description: The document id
