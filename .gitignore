@@ -13,3 +13,5 @@ thumbs.db
 node_modules/
 temp/
 .nyc*
+.idea
+*_generated.yaml
