@@ -1,0 +1,68 @@
+name: Orders
+type: object
+key: _id
+
+data:
+  fixed: 3000
+  pre_run: |
+    globals.order_id = %order_id%
+
+properties:
+  _id:
+    type: string
+    data:
+      post_build: |
+        return 'order:::' + globals.order_id++;
+  customer_id:
+    type: string
+    data:
+      build: "return 'not implemented'"
+  year:
+    type: string
+    data:
+      build: "return chance.year({min: 2000, max: 2017});"
+  month:
+    type: string
+    data:
+      build: "return chance.month();"
+  day:
+    type: integer
+    data:
+      build: "return chance.integer({min: 1, max: 30});"
+  weekday:
+    type: string
+    data:
+      build: "return faker.date.weekday();"
+  quantity:
+    type: integer
+    data:
+      build: "return chance.integer({min: 0, max: 100});"
+  list_price:
+    type: float
+    data:
+      build: "return chance.floating({min: 10, max: 1000, fixed: 2});"
+  discount_amount_percent:
+    type: integer
+    data:
+      build: "return chance.floating({min: 0, max: 50, fixed: 2});"
+  sale_price:
+    type: float
+    data:
+      post_build: "return (this.list_price - (this.list_price * this.discount_amount_percent)/100).toFixed(2);"
+  tax:
+    type: float
+    data:
+      post_build: |
+        return (this.list_price * chance.floating({min: 5, max: 10, fixed: 2}) / 100).toFixed(2);
+  coupon:
+    type: string
+    data:
+      build: "return chance.string({length: 5, pool: 'ABCDEF0123456789'});"
+  department:
+    type: string
+    data:
+      build: "return faker.commerce.department();"
+  product_name:
+    type: string
+    data:
+      build: "return faker.commerce.productName();"

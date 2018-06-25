@@ -1,0 +1,307 @@
+name: Customers
+type: object
+key: _id
+data:
+  fixed: 1000
+  pre_run: |
+    globals.total_orders = documents.Orders.length
+    globals.used_orders = 0
+    globals.customer_id = %customer_id%
+  dependencies:
+    - Orders
+properties:
+  _id:
+    type: string
+    data:
+      post_build: |
+        return 'customer:::' + globals.customer_id++;
+  doc_id:
+    type: integer
+    description: The document id
+    data:
+      build: "return document_index"
+  gid:
+    type:
+    description: "guid"
+    data:
+        build: "return chance.guid();"
+  first_name:
+    type: string
+    description: "First name - string, linked to url as the personal page"
+    data:
+      fake: "{{name.firstName}}"
+  middle_name:
+    type: string
+    description: "Middle name - string"
+    data:
+      build: "return chance.bool() ? chance.name({middle: true}).split(' ')[1] : null;"
+  last_name:
+    type: string
+    description: "Last name - string"
+    data:
+      fake: "{{name.lastName}}"
+  ballance_current:
+    type: string
+    description: "currency"
+    data:
+      build: "return chance.dollar();"
+  dob:
+    type: string
+    description: "Date"
+    data:
+      build: "return new Date(faker.date.between('1980-01-01', '1999-12-31')).toISOString().split('T')[0];"
+  email:
+    type: string
+    description: "email"
+    data:
+      fake: "{{internet.email}}"
+  isActive:
+    type: boolean
+    description: "active boolean"
+    data:
+      build: "return chance.bool();"
+  linear_score:
+    type: integer
+    description: "integer 0 - 100"
+    data:
+      build: "return chance.integer({min: 0, max: 100});"
+  weighted_score:
+    type: integer
+    description: "integer 0 - 100 with zipf distribution"
+    data:
+      build: "return chance.weighted([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 0.4, 0.3, 0.25, 0.2, 0.17, 0.13, 0.11, 0.1, 0.09]) * 10 + chance.integer({min: 0, max: 10});"
+  phone_country:
+    type: string
+    description: "field linked to phone, choices: us, uk, fr"
+    data:
+      build: "return  chance.pickone(['us', 'uk', 'fr']);"
+  phone_by_country:
+    type: string
+    description: "phone number by country code, linked to phone_country field"
+    data:
+      post_build: "return chance.phone({country: this.phone_country});"
+  age_group:
+    type: string
+    description: "field linked to age, choices: child, teen, adult, senior"
+    data:
+      build: "return  chance.pickone(['child', 'teen', 'adult', 'senior']);"
+  age_by_group:
+    type: integer
+    description: "age by group, linked to age_group field"
+    data:
+      post_build: "return chance.age({type: this.age_group});"
+  url_protocol:
+    type: string
+    description: "lined to url"
+    data:
+      build: "return  chance.pickone(['http', 'https']);"
+  url_site:
+    type: string
+    description: "lined to url"
+    data:
+      build: "return  chance.pickone(['twitter', 'facebook', 'flixter', 'instagram', 'last', 'linkedin', 'xing', 'google', 'snapchat', 'tumblr', 'pinterest', 'youtube', 'vine', 'whatsapp']);"
+  url_domain:
+    type: string
+    description: "lined to url"
+    data:
+      build: "return  chance.pickone(['com', 'org', 'net', 'int', 'edu', 'gov', 'mil', 'us', 'uk', 'ft', 'it', 'de']);"
+  url:
+    type: string
+    description: "user profile url, linked to other document fields"
+    data:
+      post_build: "return '' + this.url_protocol + '://www.' + this.url_site + '.' + this.url_domain + '/' + this.first_name;"
+  devices:
+    type: array
+    description: "Array of strings - device"
+    items:
+      $ref: '#/definitions/Device'
+      data:
+        min: 2
+        max: 6
+  linked_devices:
+    type: array
+    description: "Array of array of string"
+    items:
+      $ref: '#/definitions/Device'
+      data:
+        min: 3
+        max: 6
+        submin: 1
+        submax: 4
+  address:
+    type: object
+    description: An object of the Address
+    schema:
+      $ref: '#/definitions/Address'
+  children:
+    type: array
+    description: "An array of Children objects"
+    items:
+      $ref: '#/definitions/Children'
+      data:
+        min: 0
+        max: 5
+  visited_places:
+    type: array
+    description: "Array of objects with arrays"
+    items:
+      $ref: '#/definitions/Visited_places'
+      data:
+        min: 1
+        max: 4
+  order_list:
+    type: array
+    data:
+      build: |
+        "use strict";
+        const orders = [];
+        if ((globals.total_orders - globals.used_orders) > 4) {
+          for (let i = 0, rand = chance.integer({ min: 1, max: 5 }); i < rand; i++) {
+            orders.push(documents.Orders[globals.used_orders]._id)
+            globals.used_orders++;
+          }
+        }
+        return orders;
+
+definitions:
+  Device:
+    type: string
+    description: "string AA-1 to СС-9"
+    data:
+      build: "return chance.string({length: 2, pool: 'ABC'}).concat('-').concat(chance.string({length: 1, pool: '0123456789'}));"
+  Address:
+    type: object
+    properties:
+      street:
+        type: string
+        description: The address 1
+        data:
+          build: "return faker.address.streetAddress() + ' ' + faker.address.streetSuffix();"
+      city:
+        type: string
+        description: The locality
+        data:
+          build: "return faker.address.city();"
+      zip:
+        type: string
+        description: The zip code / postal code, US only
+        data:
+          build: "return chance.zip({plusfour: false});"
+      country:
+        type: string
+        description: The country
+        schema:
+          $ref: '#/definitions/Short_country_list'
+      prev_address:
+        type: object
+        description: An object of the Address
+        schema:
+          $ref: '#/definitions/Previous_address'
+  Previous_address:
+    type: object
+    properties:
+      street:
+        type: string
+        description: The address 1
+        data:
+          build: "return faker.address.streetAddress() + ' ' + faker.address.streetSuffix();"
+      city:
+        type: string
+        description: The locality
+        data:
+          build: "return faker.address.city();"
+      zip:
+        type: string
+        description: "The zip code, US only"
+        data:
+          build: "return chance.zip({plusfour: false});"
+      country:
+        type: string
+        description: The country
+        schema:
+          $ref: '#/definitions/Short_country_list'
+      property_current_owner:
+        type: object
+        description: "owner object"
+        schema:
+          $ref: '#/definitions/Property_owner'
+  Children:
+    type: object
+    properties:
+      first_name:
+        type: string
+        description: "first name - string"
+        data:
+          fake: "{{name.firstName}}"
+      gender:
+        type: string
+        description: "gender M or F"
+        data:
+          build: "return chance.bool({likelihood: 50})? faker.random.arrayElement(['M', 'F']) : null;"
+      age:
+        type: integer
+        description: "age - 1 to 17"
+        data:
+          build: "return chance.integer({min: 1, max: 17})"
+  Visited_cities:
+    type: string
+    description: "city"
+    data:
+      build: "return faker.address.city();"
+  Visited_activities:
+    type: string
+    description: "activity"
+    data:
+      build: "return chance.pickone(['museum', 'architecture', 'shopping', 'food', 'show', 'exibition', 'theatre', 'education',  'business', 'dating', 'nightlife', 'water park', 'amusement park', 'scenic', 'camping', 'sport', 'health', 'fashion', 'family', 'other']);"
+  Visited_places:
+    type: object
+    properties:
+      country:
+        type: string
+        schema:
+          $ref: '#/definitions/Short_country_list'
+      cities:
+        type: array
+        description: "Array of strings - visited cities"
+        items:
+          $ref: '#/definitions/Visited_cities'
+          data:
+            min: 1
+            max: 5
+      activities:
+        type: array
+        description: "Array of strings - activity categories"
+        items:
+          $ref: '#/definitions/Visited_activities'
+          data:
+            min: 1
+            max: 5
+  Short_country_list:
+    type: string
+    description: "activity"
+    data:
+      build: "return chance.pickone(['Belgium', 'France', 'Germany', 'Italy', 'Luxembourg', 'Netherlands', 'Denmark', 'Ireland', 'United Kingdom', 'Greece', 'Portugal', 'Spain', 'Austria', 'Finland', 'Sweden', 'Cyprus', 'Czech Republic', 'United States', 'Canada', 'Estonia', 'Hungary', 'Latvia', 'Lithuania', 'Malta', 'Poland', 'Slovakia', 'Slovenia', 'Bulgaria', 'Romania', 'Croatia']);"
+  Property_owner:
+    type: object
+    properties:
+      first_name:
+        type: string
+        description: "First name - string, linked to url as the personal page"
+        data:
+          fake: "{{name.firstName}}"
+      middle_name:
+        type: string
+        description: "Middle name - string"
+        data:
+          build: "return chance.bool() ? chance.name({middle: true}).split(' ')[1] : null;"
+      last_name:
+        type: string
+        description: "Last name - string"
+        data:
+          fake: "{{name.lastName}}"
+      phone:
+        type: string
+        description: "phone"
+        data:
+          build: "return chance.phone();"
+
