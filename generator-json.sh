@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-NODE_OPTIONS="--max-old-space-size=2048" node -v
+NODE_OPTIONS="--max-old-space-size=5120" node -v
 for i in `seq 0 49`; do
     n=$((i * 100000))
     sed "s/%customer_id%/${n}/g" ./models/customers_template.yaml > ./models/customers_generated.yaml
