@@ -6,7 +6,7 @@ for i in `seq 1 $folders`; do
     for j in `seq 0 $records`; do
         n=$((i * $records + j))
 
-        mongoimport --quiet --db ycsb-local --mode merge --collection customer --file ./results/$i/customer---$n.json
-        mongoimport --quiet --db ycsb-local --mode merge --collection order --file ./results/$i/order---$n.json
+        mongoimport --quiet --mode merge --collection customer --file ./results/$i/customer---$n.json --uri mongodb://localhost:27017/ycsb-local
+        mongoimport --quiet --mode merge --collection order --file ./results/$i/order---$n.json --uri mongodb://localhost:27017/ycsb-local
     done
 done
