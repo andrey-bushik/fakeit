@@ -2,8 +2,8 @@
 folders=99
 for i in `seq 0 $folders`; do
     echo "$(date) >> importing folder ${i}..."
-    mongoimport --jsonArray --mode merge --collection customer --file ./results/$i/combined-customers.json --db ycsb --username guest --password guest --authenticationDatabase admin --host c1:27117
-    mongoimport --jsonArray --mode merge --collection order --file ./results/$i/combined-orders.json --db ycsb --username guest --password guest --authenticationDatabase admin --host c1:27117
+    mongoimport --numInsertionWorkers 8 --jsonArray --mode merge --collection customer --file ./results/$i/combined-customers.json --db ycsb --username guest --password guest --authenticationDatabase admin --host c1:27117
+    mongoimport --numInsertionWorkers 8 --jsonArray --mode merge --collection order --file ./results/$i/combined-orders.json --db ycsb --username guest --password guest --authenticationDatabase admin --host c1:27117
 done
 
 #folders=100
