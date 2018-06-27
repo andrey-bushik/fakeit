@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 for filepath in $(ls -d results/*); do
+  echo $filepath
   find $filepath -type f -name 'customer*.json' -exec cat {} + | jq -c -s . > $filepath/combined-customers.json
   find $filepath -type f -name 'order*.json' -exec cat {} + | jq -c -s . > $filepath/combined-orders.json
 
