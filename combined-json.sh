@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-for filepath in $(ls -d results/*); do
+start=$1
+end=$2
+
+#for filepath in $(ls -d results/*); do
+for i in `seq $start $end`; do
+  filepath=./results/$i
   echo $filepath
   find $filepath -type f -name 'customer*.json' -exec cat {} + | jq -c -s . > $filepath/combined-customers.json
   find $filepath -type f -name 'order*.json' -exec cat {} + | jq -c -s . > $filepath/combined-orders.json
