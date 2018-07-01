@@ -28,3 +28,5 @@ done
 #        mongoimport --quiet --mode merge --collection order --file ./results/$i/order---$n.json --db ycsb --username guest --password guest --authenticationDatabase admin --host c1:27117
 #    done
 #done
+
+#zip -R combined-results 'combined-customers.json' 'combined-orders.json'
